@@ -306,3 +306,25 @@ impl<'a> CreateReply<'a> {
         builder.embeds(embeds)
     }
 }
+
+/// Methods for inspecting and transforming the embeds in a reply.
+impl<'a> CreateReply<'a> {
+    /// Returns a slice of the embeds currently in this message.
+    pub fn embeds(&self) -> &[serenity::CreateEmbed<'a>] {
+        &self.embeds
+    }
+
+    /// Returns a mutable slice of the embeds currently in this message.
+    pub fn embeds_mut(&mut self) -> &mut [serenity::CreateEmbed<'a>] {
+        &mut self.embeds
+    }
+
+    /// Transforms each embed currently in this message using the provided function.
+    pub fn map_embeds<F>(mut self, f: F) -> Self
+    where
+        F: FnMut(serenity::CreateEmbed<'a>) -> serenity::CreateEmbed<'a>,
+    {
+        self.embeds = self.embeds.into_iter().map(f).collect();
+        self
+    }
+}
